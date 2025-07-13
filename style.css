@@ -1,104 +1,37 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f9f9f9;
-  color: #000;
-  margin: 0;
-  padding: 0;
-  transition: background 0.3s, color 0.3s;
-}
+/* --- general --- */
+*{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body,html{margin:0;height:100%}
+body.dark{background:#121212;color:#eee}
+h2,h3,h4{margin:0 0 .5rem}
+button{cursor:pointer;border:none;border-radius:6px;padding:.45rem 1rem;margin:.25rem 0}
+button.primary{background:#007bff;color:#fff}
+button.danger{background:#e01e37;color:#fff}
+input,textarea{width:100%;padding:.55rem;border-radius:6px;border:1px solid #bbb}
+textarea{min-height:160px;resize:vertical}
 
-.container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
-}
+/* logo + top bar */
+.top-bar{display:flex;align-items:center;gap:1rem;justify-content:space-between;margin-bottom:1rem}
+.logo-small{height:36px}
+.icon{font-size:1.6rem}
 
-h1, h2, h3 {
-  text-align: center;
-}
+/* editor + counters */
+#liveCount{font-size:.85rem;color:#666;margin:.25rem 0}
+.tags button{background:#ffd24c}
 
-input, textarea {
-  width: 100%;
-  margin-bottom: 1rem;
-  padding: 0.8rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+/* side panels */
+.sidepanel{position:fixed;top:0;right:-320px;width:320px;height:100%;background:#fff;padding:1rem;box-shadow:-4px 0 10px #0003;overflow:auto;transition:.3s}
+body.dark .sidepanel{background:#1e1e1e;color:#eee}
+.sidepanel.open{right:0}
+.wall-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem}
+.wall-grid img{width:100%;border-radius:4px;cursor:pointer}
+#wallpaper{z-index:-1;position:fixed;inset:0;background-size:cover;background-position:center;filter:brightness(.8)}
+body.dark #wallpaper{filter:brightness(.5)}
 
-button {
-  width: 100%;
-  padding: 0.8rem;
-  background: #007bff;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+/* login page card */
+.login-page{display:flex;align-items:center;justify-content:center}
+.card{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 14px #0003;width:320px;text-align:center}
+.logo-big{width:120px;margin-bottom:1rem}
 
-button:hover {
-  background: #0056b3;
-}
-
-ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-li {
-  background: #eee;
-  padding: 0.8rem;
-  margin: 0.5rem 0;
-  border-radius: 5px;
-}
-
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.icon {
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-#settingsMenu {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: white;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  box-shadow: 0 0 10px #aaa;
-  display: none;
-}
-
-.hidden {
-  display: none;
-}
-
-.dark-mode {
-  background: #121212;
-  color: #f0f0f0;
-}
-
-.dark-mode .container {
-  background: #1e1e1e;
-  box-shadow: none;
-}
-
-@media (max-width: 600px) {
-  .container {
-    padding: 1rem;
-    margin: 1rem;
-  }
-
-  input, textarea, button {
-    font-size: 0.95rem;
-  }
+@media(max-width:600px){
+  .sidepanel{width:90%}
 }
