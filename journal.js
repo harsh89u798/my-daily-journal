@@ -1,173 +1,240 @@
-/* ---------- helpers ---------- */
-const $=id=>document.getElementById(id);
-const entries=JSON.parse(localStorage.getItem('djEntries')||'[]');
-const user=JSON.parse(localStorage.getItem('djUser')||'null');
-if(!user) location='index.html';
+/* -------------------  Shortcuts & State  ------------------- */
+const $ = id => document.getElementById(id);
 
-/* ---------- state ---------- */
-let currentEditIndex=null;
+let currentEditIndex = null;
+let entries = JSON.parse(localStorage.getItem('djEntries') || '[]');
+const user = JSON.parse(localStorage.getItem('djUser') || 'null');
+if (!user) location = 'index.html';
 
-/* ---------- init ---------- */
-window.onload=()=>{
-  // wallpaper list
-  for(let i=1;i<=20;i++){
-    const img=document.createElement('img');
-    img.src=`wallpapers/w${i}.jpg`;
-    img.onclick=()=>setWallpaper(img.src);
-    $('wallList').append(img);
-  }
-  // load wallpaper & theme
-  const savedWall=localStorage.getItem('djWall')||'wallpapers/w1.jpg';
-  setWallpaper(savedWall,false);
-  const dark=localStorage.getItem('djTheme')==='dark';
-  applyTheme(dark);
-  $('themeToggle').checked=dark;
-
-  // user info
-  $('uName').textContent=user.username;
-  $('uEmail').textContent=user.email;
-  $('uPhone').textContent=user.phone;
-
-  // listeners
-  $('themeToggle').onchange=e=>applyTheme(e.target.checked);
-  $('entry').addEventListener('input',updateCount);
-  document.querySelectorAll('.tags button').forEach(b=>{
-    b.onclick=()=>$('entry').value+=` #${b.dataset.tag}`;
-  });
-
-  // panels
-  linkPanel('bookBtn','bookPanel');
-  linkPanel('settingsBtn','settingsPanel');
-  linkPanel('userBtn','userPanel');
-
+/* -------------------  Initialisation  ------------------- */
+window.onload = () => {
+  initWallpaperAndTheme();
+  initUserInfo();
+  initPanels();
   renderEntries();
   updateStats();
+
+  // live word/char counter
+  $('entry').addEventListener('input', updateCount);
+
+  // quick‑tag buttons
+  document.querySelectorAll('.tags button').forEach(btn =>
+    btn.onclick = () => $('entry').value += ` #${btn.dataset.tag}`
+  );
 };
 
-/* ---------- panels ---------- */
-function linkPanel(btnId,panelId){
-  $(btnId).onclick=()=>{
-    document.querySelectorAll('.sidepanel').forEach(p=>p.classList.remove('open'));
-    $(panelId).classList.toggle('open');
-  };
-}
-
-/* ---------- theme & wall ---------- */
-function applyTheme(dark){
-  document.body.classList.toggle('dark',dark);
-  localStorage.setItem('djTheme',dark?'dark':'light');
-}
-function setWallpaper(src,save=true){
-  $('wallpaper').style.backgroundImage=`url('${src}')`;
-  if(save) localStorage.setItem('djWall',src);
-}
-
-/* ---------- word counter ---------- */
-function updateCount(){
-  const txt=$('entry').value;
-  const words=(txt.match(/\b\w+\b/g)||[]).length;
-  $('liveCount').textContent=`${words} words • ${txt.length} chars`;
-}
-
-/* ---------- save / render ---------- */
-function saveEntry(){
-  const text=$('entry').value.trim();
-  if(!text)return alert('Write something!');
-  const date=new Date().toISOString().slice(0,10);
-  const entry={date,text,tags:extractTags(text)};
-  if(currentEditIndex!==null){
-    entries[currentEditIndex]=entry;
-    currentEditIndex=null;
-  }else{
-    entries.unshift(entry);
+/* -----------  Wallpaper & Theme (Settings Panel) ---------- */
+function initWallpaperAndTheme() {
+  // Thumbnails for 20 wallpapers
+  for (let i = 1; i <= 20; i++) {
+    const thumb = document.createElement('img');
+    thumb.src = `wallpapers/w${i}.jpg`;
+    thumb.onclick = () => setWallpaper(thumb.src);
+    $('wallList').append(thumb);
   }
-  localStorage.setItem('djEntries',JSON.stringify(entries));
-  $('entry').value='';
+
+  // Load saved wallpaper & theme
+  setWallpaper(localStorage.getItem('djWall') || 'wallpapers/w1.jpg', false);
+  const dark = localStorage.getItem('djTheme') === 'dark';
+  applyTheme(dark);
+  $('themeToggle').checked = dark;
+  $('themeToggle').onchange = e => applyTheme(e.target.checked);
+}
+
+function setWallpaper(src, save = true) {
+  $('wallpaper').style.backgroundImage = `url('${src}')`;
+  if (save) localStorage.setItem('djWall', src);
+}
+
+function applyTheme(isDark) {
+  document.body.classList.toggle('dark', isDark);
+  localStorage.setItem('djTheme', isDark ? 'dark' : 'light');
+}
+
+/* -------------------  User Info  ------------------- */
+function initUserInfo() {
+  $('uName').textContent = user.username;
+  $('uEmail').textContent = user.email;
+  $('uPhone').textContent = user.phone;
+}
+
+/* -------------------  Panels & Mask  ------------------- */
+function initPanels() {
+  const panels = ['bookPanel', 'settingsPanel', 'userPanel'];
+  const buttons = ['bookBtn', 'settingsBtn', 'userBtn'];
+
+  buttons.forEach((btnId, i) => {
+    $(btnId).onclick = () => togglePanel(panels[i]);
+  });
+
+  // Mask closes any open panel
+  $('mask').onclick = () => closePanels();
+}
+
+function togglePanel(panelId) {
+  const panel = $(panelId);
+  const open = !panel.classList.contains('open');
+  closePanels();
+  if (open) {
+    panel.classList.add('open');
+    $('mask').classList.add('show');
+  }
+}
+
+function closePanels() {
+  document.querySelectorAll('.sidepanel').forEach(p => p.classList.remove('open'));
+  $('mask').classList.remove('show');
+}
+
+/* -------------------  Live Word/Char Counter  ------------------- */
+function updateCount() {
+  const t = $('entry').value;
+  const words = (t.match(/\b\w+\b/g) || []).length;
+  $('liveCount').textContent = `${words} words • ${t.length} chars`;
+}
+
+/* -------------------  CRUD: Save / Edit / Delete  ------------------- */
+function saveEntry() {
+  const text = $('entry').value.trim();
+  if (!text) return alert('Write something!');
+
+  const date = new Date().toISOString().slice(0, 10);
+  const obj = {
+    date,
+    text,
+    tags: (text.match(/#\w+/g) || [])
+  };
+
+  if (currentEditIndex !== null) {
+    entries[currentEditIndex] = obj;
+    currentEditIndex = null;
+  } else {
+    entries.unshift(obj);
+  }
+
+  persist();
+  $('entry').value = '';
   updateCount();
   renderEntries();
   updateStats();
 }
-function extractTags(t){return[...new Set(t.match(/#\w+/g)||[])]}
-function renderEntries(){
-  // preview (latest 3)
-  $('previewList').innerHTML=entries.slice(0,3).map(renderLi).join('');
-  // full list
-  $('entriesList').innerHTML=entries.map(renderLiFull).join('');
-}
-const renderLi=e=>`<li><strong>${e.date}</strong> – ${e.text.slice(0,40)}…</li>`;
-const renderLiFull=(e,i)=>`
-<li>
-  <strong>${e.date}</strong><br>${e.text.replace(/\n/g,'<br>')}
-  <div class="mini-btns">
-    <button onclick="startEdit(${i})">✏️</button>
-    <button onclick="delEntry(${i})">🗑️</button>
-  </div>
-</li>`;
-function startEdit(i){
-  currentEditIndex=i;
-  $('entry').value=entries[i].text;
-  $('entry').scrollIntoView();
+
+function startEdit(i) {
+  currentEditIndex = i;
+  $('entry').value = entries[i].text;
+  $('entry').scrollIntoView({ behavior: 'smooth' });
   updateCount();
+  closePanels();
 }
-function delEntry(i){
-  if(confirm('Delete this entry?')){
-    entries.splice(i,1);
-    localStorage.setItem('djEntries',JSON.stringify(entries));
-    renderEntries();updateStats();
+
+function delEntry(i) {
+  if (confirm('Delete this entry?')) {
+    entries.splice(i, 1);
+    persist();
+    renderEntries();
+    updateStats();
   }
 }
 
-/* ---------- search / filter ---------- */
-$('searchBox').oninput=$('dateFilter').onchange=filterRender;
-function filterRender(){
-  const q=$('searchBox').value.toLowerCase();
-  const d=$('dateFilter').value;
-  $('entriesList').innerHTML=entries.filter(e=>{
-    const okQ=!q||e.text.toLowerCase().includes(q)||e.tags.some(t=>t.toLowerCase().includes(q));
-    const okD=!d||e.date===d;
-    return okQ&&okD;
-  }).map(renderLiFull).join('');
+function persist() {
+  localStorage.setItem('djEntries', JSON.stringify(entries));
 }
 
-/* ---------- export ---------- */
-function exportTXT(){
-  const blob=new Blob([entries.map(e=>`${e.date}\n${e.text}\n\n`).join('')],{type:'text/plain'});
-  download(blob,'journal.txt');
+/* -------------------  Render Lists  ------------------- */
+function cardHTML(e, i) {
+  return `<li>
+    <strong>${e.date}</strong><br>${e.text.replace(/\n/g, '<br>')}
+    <div class="mini-btns">
+      <button onclick="startEdit(${i})">✏️</button>
+      <button onclick="delEntry(${i})">🗑️</button>
+    </div>
+  </li>`;
 }
-function exportPDF(){
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF();
-  let y=10;
-  entries.forEach(e=>{
-    doc.text(`${e.date}`,10,y);y+=6;
-    e.text.split('\n').forEach(l=>{doc.text(l,10,y);y+=6;if(y>280){doc.addPage();y=10;}});
-    y+=6;
+
+function renderEntries() {
+  // Preview list (latest 3)
+  $('previewList').innerHTML = entries.slice(0, 3).map(cardHTML).join('');
+
+  // Full Book panel list
+  $('entriesList').innerHTML = entries.map(cardHTML).join('');
+}
+
+/* -------------------  Search & Date Filter  ------------------- */
+$('searchBox').oninput = $('dateFilter').onchange = () => {
+  const q = $('searchBox').value.toLowerCase();
+  const d = $('dateFilter').value;
+
+  $('entriesList').innerHTML = entries
+    .filter(e => {
+      const okQ = !q || e.text.toLowerCase().includes(q) ||
+                  e.tags.some(t => t.toLowerCase().includes(q));
+      const okD = !d || e.date === d;
+      return okQ && okD;
+    })
+    .map(cardHTML)
+    .join('');
+};
+
+/* -------------------  Export (TXT / PDF)  ------------------- */
+function exportTXT() {
+  const blob = new Blob(
+    [entries.map(e => `${e.date}\n${e.text}\n\n`).join('')],
+    { type: 'text/plain' }
+  );
+  download(blob, 'journal.txt');
+}
+
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let y = 10;
+
+  entries.forEach(e => {
+    doc.text(e.date, 10, y);
+    y += 6;
+    e.text.split('\n').forEach(line => {
+      doc.text(line, 10, y);
+      y += 6;
+      if (y > 280) { doc.addPage(); y = 10; }
+    });
+    y += 6;
   });
+
   doc.save('journal.pdf');
 }
-function download(blob,filename){
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=filename;
+
+function download(blob, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
   a.click();
 }
 
-/* ---------- stats ---------- */
-function updateStats(){
-  // streak: consecutive days with at least 1 entry
-  const days=[...new Set(entries.map(e=>e.date))];
-  let streak=0,cur=new Date().toISOString().slice(0,10);
-  while(days.includes(cur)){streak++;cur=new Date(Date.parse(cur)-86400000).toISOString().slice(0,10);}
-  $('streakCount').textContent=`${streak} 🔥 day${streak!==1?'s':''}`;
+/* -------------------  Stats & Streak  ------------------- */
+function updateStats() {
+  // Streak (consecutive days)
+  const days = [...new Set(entries.map(e => e.date))];
+  let streak = 0;
+  let cur = new Date().toISOString().slice(0, 10);
+  while (days.includes(cur)) {
+    streak++;
+    cur = new Date(Date.parse(cur) - 864e5).toISOString().slice(0, 10);
+  }
+  $('streakCount').textContent = `${streak} 🔥 day${streak !== 1 ? 's' : ''}`;
 
-  // insights
-  const counts=entries.reduce((m,e)=>(m[e.date]=(m[e.date]||0)+1,m),{});
-  const mostActive=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
-  const avgWords=Math.round(entries.reduce((sum,e)=>sum+e.text.split(/\s+/).length,0)/ (entries.length||1));
-  $('insights').innerHTML=`Most active: <b>${mostActive?mostActive[0]:'—'}</b><br>
-                           Avg words: <b>${avgWords}</b>`;
+  // Insights (most active day, avg words)
+  const counts = entries.reduce((m, e) => (m[e.date] = (m[e.date] || 0) + 1, m), {});
+  const [topDay = '—'] = (Object.entries(counts).sort((a, b) => b[1] - a[1])[0] || []);
+  const avg = Math.round(entries.reduce((s, e) => s + e.text.split(/\s+/).length, 0) /
+                         (entries.length || 1));
+
+  $('insights').innerHTML = `Most active: <b>${topDay}</b><br>Avg words: <b>${avg}</b>`;
 }
 
-/* ---------- logout ---------- */
-function logout(){localStorage.clear();location='index.html';}
+/* -------------------  Logout  ------------------- */
+function logout() {
+  localStorage.clear();
+  location = 'index.html';
+}
+
 
