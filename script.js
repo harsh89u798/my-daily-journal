@@ -1,14 +1,14 @@
-document.getElementById("loginForm").onsubmit = function(e) {
+document.getElementById('loginForm').addEventListener('submit', e=>{
   e.preventDefault();
+  const user={
+    username:username.value.trim(),
+    email:email.value.trim(),
+    phone:phone.value.trim(),
+    pwd:password.value
+  };
+  localStorage.setItem('djUser',JSON.stringify(user));
+  // create journal array if not present
+  if(!localStorage.getItem('djEntries')) localStorage.setItem('djEntries','[]');
+  location='journal.html';
+});
 
-  const username = document.getElementById("username").value;
-  const email = document.getElementById("email").value;
-  const phone = document.getElementById("phone").value;
-  const password = document.getElementById("password").value;
-
-  const user = { username, email, phone };
-  localStorage.setItem("user", JSON.stringify(user));
-
-  // In real-world you'd validate credentials
-  window.location.href = "journal.html";
-};
