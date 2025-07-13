@@ -7,7 +7,6 @@ document.getElementById('loginForm').addEventListener('submit', e=>{
     pwd:password.value
   };
   localStorage.setItem('djUser',JSON.stringify(user));
-  // create journal array if not present
   if(!localStorage.getItem('djEntries')) localStorage.setItem('djEntries','[]');
   location='journal.html';
 });
