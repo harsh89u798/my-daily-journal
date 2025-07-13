@@ -5,17 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Daily Journal</title>
   <link rel="stylesheet" href="style.css" />
- 
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
 <body>
-
- 
+  <div id="mask"></div>
   <div id="wallpaper"></div>
 
   <div class="container">
-
-   
     <header class="top-bar">
       <span id="bookBtn" class="icon" title="Entries & Tools">📖</span>
       <img src="logo.svg" alt="logo" class="logo-small"/>
@@ -23,68 +19,51 @@
       <span id="userBtn" class="icon" title="Profile & Stats">👤</span>
     </header>
 
- 
     <section class="editor">
       <textarea id="entry" placeholder="Write your thoughts, add #tags or 😊 moods…"></textarea>
       <div id="liveCount">0 words • 0 chars</div>
-
-   
       <div class="tags">
         <button data-tag="Gratitude">🙏 Gratitude</button>
         <button data-tag="Work">💼 Work</button>
         <button data-tag="Happy">😄 Happy</button>
         <button data-tag="Sad">😔 Sad</button>
       </div>
-
       <button class="primary" onclick="saveEntry()">Save Entry</button>
     </section>
 
-    
     <h2>Latest Entries</h2>
-    <ul id="previewList"></ul>
-
+    <ul id="previewList" class="preview"></ul>
   </div>
 
-  
   <div id="bookPanel" class="sidepanel">
     <h3>Entries & Tools</h3>
     <input id="searchBox" placeholder="Search…" />
     <input id="dateFilter" type="date" />
-
     <ul id="entriesList"></ul>
-
     <button onclick="exportTXT()">Export TXT</button>
     <button onclick="exportPDF()">Export PDF</button>
   </div>
 
-  <!-- ⚙️ Settings panel -->
   <div id="settingsPanel" class="sidepanel">
     <h3>Settings</h3>
     <label><input type="checkbox" id="themeToggle"> Dark Mode</label>
-
     <h4>Wallpaper</h4>
     <div id="wallList" class="wall-grid"></div>
   </div>
 
-  <!-- 👤 User panel -->
   <div id="userPanel" class="sidepanel">
     <h3>Profile & Stats</h3>
     <p><strong id="uName"></strong><br>
        <span id="uEmail"></span><br>
        <span id="uPhone"></span></p>
-
     <hr>
-
     <h4>Streak</h4>
-    <p id="streakCount">0 🔥 days</p>
-
+    <p id="streakCount">0 🔥 days</p>
     <h4>Insights</h4>
     <p id="insights"></p>
-
     <button onclick="logout()" class="danger">Logout</button>
   </div>
 
   <script src="journal.js"></script>
 </body>
 </html>
-
