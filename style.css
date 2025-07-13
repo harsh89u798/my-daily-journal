@@ -1,4 +1,4 @@
-/* --- general --- */
+/* Reset & Base */
 *{box-sizing:border-box;font-family:'Segoe UI',sans-serif}
 body,html{margin:0;height:100%}
 body.dark{background:#121212;color:#eee}
@@ -8,18 +8,20 @@ button.primary{background:#007bff;color:#fff}
 button.danger{background:#e01e37;color:#fff}
 input,textarea{width:100%;padding:.55rem;border-radius:6px;border:1px solid #bbb}
 textarea{min-height:160px;resize:vertical}
+ul{padding-left:1rem}
 
-/* logo + top bar */
+/* Top Bar */
 .top-bar{display:flex;align-items:center;gap:1rem;justify-content:space-between;margin-bottom:1rem}
 .logo-small{height:36px}
-.icon{font-size:1.6rem}
+.icon{font-size:1.6rem;cursor:pointer}
 
-/* editor + counters */
+/* Editor */
 #liveCount{font-size:.85rem;color:#666;margin:.25rem 0}
 .tags button{background:#ffd24c}
+.tags{margin:.5rem 0}
 
-/* side panels */
-.sidepanel{position:fixed;top:0;right:-320px;width:320px;height:100%;background:#fff;padding:1rem;box-shadow:-4px 0 10px #0003;overflow:auto;transition:.3s}
+/* Side Panels */
+.sidepanel{position:fixed;top:0;right:-320px;width:320px;height:100%;background:#fff;padding:1rem;box-shadow:-4px 0 10px #0003;overflow:auto;transition:right .3s ease;z-index:10}
 body.dark .sidepanel{background:#1e1e1e;color:#eee}
 .sidepanel.open{right:0}
 .wall-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem}
@@ -27,11 +29,25 @@ body.dark .sidepanel{background:#1e1e1e;color:#eee}
 #wallpaper{z-index:-1;position:fixed;inset:0;background-size:cover;background-position:center;filter:brightness(.8)}
 body.dark #wallpaper{filter:brightness(.5)}
 
-/* login page card */
-.login-page{display:flex;align-items:center;justify-content:center}
+/* Mask for outside click */
+#mask{position:fixed;inset:0;background:transparent;display:none;z-index:8}
+#mask.show{display:block}
+
+/* Login Page */
+.login-page{display:flex;align-items:center;justify-content:center;height:100vh}
 .card{background:#fff;padding:2rem;border-radius:12px;box-shadow:0 4px 14px #0003;width:320px;text-align:center}
 .logo-big{width:120px;margin-bottom:1rem}
 
+/* Entry Cards */
+.mini-btns button{
+  background:#fff;border:1px solid #bbb;padding:.1rem .35rem;font-size:.8rem;margin-left:.3rem;border-radius:4px;
+}
+body.dark .mini-btns button{background:#333;border-color:#666;color:#eee}
+
+/* Responsive */
 @media(max-width:600px){
   .sidepanel{width:90%}
+  .container{padding:.75rem;margin:.5rem;}
+  textarea{min-height:120px;font-size:.9rem;}
+  .icon{font-size:1.4rem;}
 }
