@@ -6,7 +6,7 @@ A simple, responsive, and privacy-focused web application for users to write and
 
 Features
 
-  - Login & Registration**
+  - Login & Registration
   - Allows login via username (email/phone accepted)
   - Separate form for new user registration with email and phone verification fields
 
