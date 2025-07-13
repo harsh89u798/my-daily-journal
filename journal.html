@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Daily Journal</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <span class="icon">📖</span>
+      <span class="icon" id="settingsBtn">⚙️</span>
+      <span class="icon">👤</span>
+    </div>
+
+    <h1>My Daily Journal</h1>
+
+    <textarea id="entry" placeholder="Write your thoughts here..."></textarea>
+    <button onclick="saveEntry()">Save Entry</button>
+
+    <h2>Previous Entries</h2>
+    <ul id="entriesList"></ul>
+
+    <button onclick="viewAll()">See All Entries</button>
+  </div>
+
+  <div id="settingsMenu" class="hidden">
+    <h3>Settings</h3>
+    <label>
+      <input type="checkbox" id="themeToggle" />
+      Dark Mode
+    </label>
+  </div>
+
+  <script src="journal.js"></script>
+</body>
+</html>
