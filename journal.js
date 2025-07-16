@@ -24,17 +24,26 @@ window.onload = () => {
 };
 
 /* -----------  Wallpaper & Theme (Settings Panel) ---------- */
-function initWallpaperAndTheme() {
-  // Thumbnails for 20 wallpapers
-  for (let i = 1; i <= 20; i++) {
-    const thumb = document.createElement('img');
-    thumb.src = `wallpapers/w${i}.jpg`;
-    thumb.onclick = () => setWallpaper(thumb.src);
-    $('wallList').append(thumb);
-  }
+const wallpaperURLs = [
+  "https://img.freepik.com/free-photo/digital-art-halloween-celebration_23-2151822832.jpg",
+  "https://marketplace.canva.com/EAFmp5--cSc/2/0/900w/canva-purple-illustration-cartoon-phone-wallpaper-Vtvpm204oI4.jpg",
+  "https://wallpapers.com/images/featured/cartoon-f6iwzuefsy7aohmy.jpg",
+  "https://marketplace.canva.com/EAFIU5uOojA/1/0/1600w/canva-pastel-illustration-scenery-cartoon-desktop-wallpaper-l04fmn2_Sgw.jpg",
+  "https://png.pngtree.com/thumb_back/fh260/background/20231220/pngtree-cartoon-kids-walking-wallpaper-image_15518512.jpg",
+  "https://static.vecteezy.com/system/resources/thumbnails/022/777/832/small/cute-and-colorful-doodle-monster-created-with-ai-tools-photo.jpg",
+  "https://c4.wallpaperflare.com/wallpaper/152/222/393/mickey-mouse-cartoon-wallpaper-hd-for-mobile-phones-and-laptops-wallpaper-preview.jpg",
+  "https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTA0L3Jhd3BpeGVsX29mZmljZV8zNF9jdXRlX2NodWJieV9mb3hfZHJlYW15X3dhbGxwYXBlcl9jYXJ0b29uX2lsbF80YjUyYzQ5Ni0yNWVlLTQ3MWMtODg5OC1jMjRlNTRmMjI1OWJfMS5qcGc.jpg"
+];
 
-  // Load saved wallpaper & theme
-  setWallpaper(localStorage.getItem('djWall') || 'wallpapers/w1.jpg', false);
+function initWallpaperAndTheme() {
+  wallpaperURLs.forEach(url => {
+    const thumb = document.createElement('img');
+    thumb.src = url;
+    thumb.onclick = () => setWallpaper(url);
+    $('wallList').appendChild(thumb);
+  });
+
+  setWallpaper(localStorage.getItem('djWall') || wallpaperURLs[0], false);
   const dark = localStorage.getItem('djTheme') === 'dark';
   applyTheme(dark);
   $('themeToggle').checked = dark;
