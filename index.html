@@ -1,26 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login · Daily Journal</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Journal</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="login-page">
-  <div class="card">
-    <img src="logo.svg" alt="Daily Journal" class="logo-big" />
-    <h2>Login / Register</h2>
-    <form id="loginForm">
-      <input id="username" placeholder="Username" required />
-      <input id="email" type="email" placeholder="Email 📧" required />
-      <input id="phone" type="tel" placeholder="Phone ☎️" required />
-      <input id="password" type="password" placeholder="Password 🔑" required />
-      <button>Enter Journal</button>
+<body>
+  <header>
+    <img src="logo.svg" alt="Logo" class="logo">
+    <h1>Daily Journal</h1>
+  </header>
+
+  <main>
+    <form id="entryForm">
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter a valid email" required>
+
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" placeholder="Enter 10-digit number" pattern="\d{10}" required>
+
+      <label for="entry">Write your thoughts:</label>
+      <textarea id="entry" placeholder="Today I learned..."></textarea>
+
+      <label for="wallpaper">Choose Wallpaper:</label>
+      <select id="wallpaper">
+        <option value="">Default</option>
+        <option value="https://img.freepik.com/free-photo/digital-art-halloween-celebration_23-2151822832.jpg">Halloween</option>
+        <option value="https://marketplace.canva.com/EAFmp5--cSc/2/0/900w/canva-purple-illustration-cartoon-phone-wallpaper-Vtvpm204oI4.jpg">Purple Phone</option>
+        <option value="https://wallpapers.com/images/featured/cartoon-f6iwzuefsy7aohmy.jpg">Cartoon Mix</option>
+        <option value="https://marketplace.canva.com/EAFIU5uOojA/1/0/1600w/canva-pastel-illustration-scenery-cartoon-desktop-wallpaper-l04fmn2_Sgw.jpg">Pastel Scenery</option>
+        <option value="https://png.pngtree.com/thumb_back/fh260/background/20231220/pngtree-cartoon-kids-walking-wallpaper-image_15518512.jpg">Kids Walking</option>
+        <option value="https://static.vecteezy.com/system/resources/thumbnails/022/777/832/small/cute-and-colorful-doodle-monster-created-with-ai-tools-photo.jpg">Doodle Monsters</option>
+        <option value="https://c4.wallpaperflare.com/wallpaper/152/222/393/mickey-mouse-cartoon-wallpaper-hd-for-mobile-phones-and-laptops-wallpaper-preview.jpg">Mickey Mouse</option>
+        <option value="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTA0L3Jhd3BpeGVsX29mZmljZV8zNF9jdXRlX2NodWJieV9mb3hfZHJlYW15X3dhbGxwYXBlcl9jYXJ0b29uX2lsbF80YjUyYzQ5Ni0yNWVlLTQ3MWMtODg5OC1jMjRlNTRmMjI1OWJfMS5qcGc.jpg">Chubby Cartoon</option>
+      </select>
+
+      <button type="submit">Start Journaling</button>
     </form>
-  </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Harsh Vardhan</p>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
